@@ -97,3 +97,11 @@ footer{display:none}
 .chart-draw-tools button:disabled:hover{background:transparent;color:#aeb8c2}
 .chart-draw-tools select:focus{border-color:#f0b90b}
 @media(max-width:700px){.drawing-select{max-width:105px;min-width:78px;font-size:9px}.chart-draw-tools{max-width:calc(100% - 12px);gap:2px;padding:3px}.chart-draw-tools button{width:27px;height:27px;font-size:10px}}
+
+
+/* TradingView-style quick alert plus aligned with the crosshair price. */
+.price-alert-plus{position:absolute;z-index:9;width:30px;height:30px;display:grid;place-items:center;border:1px solid #0ecb81;border-radius:5px;background:#0ecb81;color:#07120d;box-shadow:0 2px 8px #0009;cursor:pointer;padding:0}
+.price-alert-plus.on-right{right:6px}
+.price-alert-plus.on-left{left:6px}
+.price-alert-plus:active{transform:scale(.94);background:#13e895}
+@media(max-width:700px){.price-alert-plus{width:29px;height:29px}.price-alert-plus.on-right{right:5px}.price-alert-plus.on-left{left:5px}}
