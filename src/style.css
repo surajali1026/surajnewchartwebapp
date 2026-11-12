@@ -47,3 +47,16 @@ footer{display:none}
 .install-app-btn{display:inline-flex;align-items:center;gap:5px;border:1px solid #8b6b0c;background:#292316;color:#f0b90b;border-radius:5px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
 .install-app-btn:hover{background:#3a2f14}
 @media(max-width:700px){.install-app-btn{padding:6px 7px;font-size:10px}.topbar{gap:7px}}
+
+/* MT5-style scrollable timeframe wheel: eight native intervals visible at once. */
+.timeframe-wheel{flex:1 1 auto;min-width:0;max-width:none;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x}
+.timeframe-wheel::-webkit-scrollbar{display:none}
+.timeframe-wheel>button:not(.custom-add){flex:0 0 12.5%;min-width:0;text-align:center;padding-left:2px;padding-right:2px;scroll-snap-align:start;white-space:nowrap}
+.timeframe-wheel>.custom-add{flex:0 0 auto;scroll-snap-align:start}
+.go-live-btn{position:absolute;z-index:7;right:14px;bottom:54px;display:flex;align-items:center;gap:5px;border:1px solid #0ecb81;background:rgba(11,14,17,.94);color:#0ecb81;border-radius:5px;padding:8px 11px;font-size:11px;font-weight:800;box-shadow:0 2px 12px #0008;cursor:pointer}
+.go-live-btn:hover{background:#123326}
+@media(max-width:700px){
+ .timeframe-wheel{max-width:none;min-width:0}
+ .timeframe-wheel>button:not(.custom-add){flex-basis:12.5%;font-size:11px;padding:7px 1px}
+ .go-live-btn{right:9px;bottom:48px;padding:7px 9px}
+}
