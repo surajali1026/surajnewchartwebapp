@@ -25,7 +25,57 @@ function App(){
  useEffect(()=>{const t=setInterval(()=>setNow(Date.now()),250);return()=>clearInterval(t);},[]);
  useEffect(()=>{if(!host.current)return;const c=createChart(host.current,{autoSize:true,layout:{background:{type:ColorType.Solid,color:'#0b0e11'},textColor:'#9aa4ad',fontFamily:'Inter,system-ui'},grid:{vertLines:{color:'#171d23'},horzLines:{color:'#171d23'}},crosshair:{mode:CrosshairMode.Normal,vertLine:{color:'#586574',labelBackgroundColor:'#29313a'},horzLine:{color:'#586574',labelBackgroundColor:'#29313a'}},rightPriceScale:{borderColor:'#29313a',scaleMargins:{top:.12,bottom:.18}},timeScale:{borderColor:'#29313a',timeVisible:true,secondsVisible:false},localization:{priceFormatter:fmt}});const cs=c.addSeries(CandlestickSeries,{upColor:'#0ecb81',downColor:'#f6465d',borderUpColor:'#0ecb81',borderDownColor:'#f6465d',wickUpColor:'#0ecb81',wickDownColor:'#f6465d'});const vs=c.addSeries(HistogramSeries,{priceFormat:{type:'volume'},priceScaleId:'',lastValueVisible:false,priceLineVisible:false});vs.priceScale().applyOptions({scaleMargins:{top:.82,bottom:0}});chart.current=c;candleSeries.current=cs;volumeSeries.current=vs;return()=>{c.remove();chart.current=null;};},[]);
  useEffect(()=>{if(!candles.length||!candleSeries.current)return;candleSeries.current.setData(candles.map(x=>({time:x.time as UTCTimestamp,open:x.open,high:x.high,low:x.low,close:x.close})));volumeSeries.current?.setData(candles.map(x=>({time:x.time as UTCTimestamp,value:x.volume,color:x.close>=x.open?'rgba(14,203,129,.35)':'rgba(246,70,93,.35)'})));chart.current?.timeScale().fitContent();},[candles]);
- useEffect(()=>{socket.current?.close();const custom=!NATIVE.has(frame);const stream=symbol.toLowerCase()+'@kline_'+(custom?'1m':frame);if(priceType!=='LAST'){setConnected(false);return;}const ws=new WebSocket('wss://fstream.binance.com/ws/'+stream);socket.current=ws;ws.onopen=()=>setConnected(true);ws.onclose=()=>setConnected(false);ws.onerror=()=>setConnected(false);ws.onmessage=e=>{const m=JSON.parse(e.data),k=m.k;if(!k)return;const raw:Candle={time:Math.floor(k.t/1000),open:+k.o,high:+k.h,low:+k.l,close:+k.c,volume:+k.v};setLastPrice(raw.close);setCandles(old=>{const a=[...old];if(custom){const t=Math.floor(raw.time*1000/interval)*interval/1000;const i=a.findIndex(x=>x.time===t);if(i>=0){const prev=a[i];a[i]={...raw,time:t,open:prev.open,high:Math.max(prev.high,raw.high),low:Math.min(prev.low,raw.low)};}else a.push({...raw,time:t});}else{const i=a.findIndex(x=>x.time===raw.time);if(i>=0)a[i]=raw;else a.push(raw);}return a.slice(-600);});};return()=>ws.close();},[symbol,frame,priceType,interval]);
+ useEffect(()=>{
+  socket.current?.close();
+  let alive=true;
+  const custom=!NATIVE.has(frame);
+  const baseInterval=custom?'1m':frame;
+  const merge=(raw:Candle)=>{
+   if(!alive)return;
+   setLastPrice(raw.close);
+   setCandles(old=>{
+    const a=[...old];
+    const t=custom?Math.floor(raw.time*1000/interval)*interval/1000:raw.time;
+    const i=a.findIndex(x=>x.time===t);
+    if(i>=0){
+     const prev=a[i];
+     a[i]={...raw,time:t,open:custom?prev.open:raw.open,high:custom?Math.max(prev.high,raw.high):raw.high,low:custom?Math.min(prev.low,raw.low):raw.low,volume:custom?prev.volume+raw.volume:raw.volume};
+    }else a.push({...raw,time:t});
+    return a.sort((x,y)=>x.time-y.time).slice(-600);
+   });
+  };
+  let ws:WebSocket|null=null;
+  if(priceType==='LAST'){
+   try{
+    ws=new WebSocket('wss://fstream.binance.com/ws/'+symbol.toLowerCase()+'@kline_'+baseInterval);
+    socket.current=ws;
+    ws.onopen=()=>{if(alive)setConnected(true);};
+    ws.onclose=()=>{if(alive)setConnected(false);};
+    ws.onerror=()=>{if(alive)setConnected(false);};
+    ws.onmessage=e=>{
+     try{const m=JSON.parse(e.data),k=m.k;if(!k)return;merge({time:Math.floor(k.t/1000),open:+k.o,high:+k.h,low:+k.l,close:+k.c,volume:+k.v});}catch{}
+    };
+   }catch{setConnected(false);}
+  }else setConnected(false);
+  // REST polling is a fallback for dropped WebSockets and the MARK/INDEX price feeds.
+  let busy=false;
+  const poll=async()=>{
+   if(busy||!alive)return;busy=true;
+   try{
+    let path='/fapi/v1/klines?symbol='+symbol+'&interval='+baseInterval+'&limit=2';
+    if(priceType==='MARK')path='/fapi/v1/markPriceKlines?symbol='+symbol+'&interval='+baseInterval+'&limit=2';
+    if(priceType==='INDEX')path='/fapi/v1/indexPriceKlines?pair='+symbol+'&interval='+baseInterval+'&limit=2';
+    const response=await fetch(API+path,{cache:'no-store'});
+    if(!response.ok)throw Error('poll '+response.status);
+    const rows=await response.json();
+    const x=rows[rows.length-1];if(!x)return;
+    merge({time:Math.floor(x[0]/1000),open:+x[1],high:+x[2],low:+x[3],close:+x[4],volume:+x[5]});
+   }catch{}finally{busy=false;}
+  };
+  poll();
+  const timer=window.setInterval(poll,3000);
+  return()=>{alive=false;window.clearInterval(timer);ws?.close();if(socket.current===ws)socket.current=null;};
+ },[symbol,frame,priceType,interval]);
  useEffect(()=>{localStorage.setItem('fav',JSON.stringify(favorites));},[favorites]);useEffect(()=>{localStorage.setItem('alerts',JSON.stringify(alerts));},[alerts]);
  useEffect(()=>{if(!lastPrice)return;setAlerts(old=>old.map(a=>{if(!a.enabled||a.symbol!==symbol)return a;const hit=a.direction==='above'?lastPrice>=a.price:lastPrice<=a.price;if(hit){if('Notification'in window&&Notification.permission==='granted')new Notification('Price alert: '+a.symbol,{body:'Price reached '+fmt(lastPrice)});return {...a,enabled:false};}return a;}));},[lastPrice,symbol]);
  const toggleFav=(s:string)=>setFavorites(v=>v.includes(s)?v.filter(x=>x!==s):[...v,s]);
