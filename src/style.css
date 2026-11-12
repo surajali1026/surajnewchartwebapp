@@ -60,3 +60,32 @@ footer{display:none}
  .timeframe-wheel>button:not(.custom-add){flex-basis:12.5%;font-size:11px;padding:7px 1px}
  .go-live-btn{right:9px;bottom:48px;padding:7px 9px}
 }
+
+
+/* Keep market category controls visible while the watchlist scrolls. */
+.drawer{min-height:0}
+.drawer-head,.drawer>.search,.market-tabs,.watch-tabs{flex-shrink:0}
+.market-tabs{display:flex;flex-wrap:nowrap;min-height:48px;overflow-x:auto;overflow-y:hidden;gap:6px;padding:10px 0 8px;scrollbar-width:thin}
+.market-tabs button{flex:0 0 auto;min-height:30px;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
+.pair-list{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+
+/* Coin navigation is deliberately outside the chart canvas. */
+.coin-step{width:32px;height:32px;flex:0 0 32px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #35414d;border-radius:5px;background:#171d23;color:#f0b90b;font-size:23px;line-height:1;cursor:pointer;padding:0}
+.coin-step:active{background:#352b12;border-color:#f0b90b}
+.ticker{gap:9px}
+.pair-select{padding:4px 2px}
+
+/* Fullscreen includes the ticker and timeframe toolbar, not just the candle canvas. */
+.app:fullscreen{width:100%;max-width:none;height:100dvh;min-height:100dvh;overflow:hidden;background:#0b0e11}
+.app:fullscreen .chart-wrap{height:calc(100dvh - 205px);min-height:260px;max-height:none}
+.app:fullscreen .toolbar{display:flex;flex-shrink:0}
+.app:fullscreen .timeframe-wheel{min-width:0;max-width:none;flex:1 1 auto}
+.app:fullscreen .price-types{flex:0 0 auto}
+@media(max-width:700px){
+ .coin-step{width:29px;height:29px;flex-basis:29px;font-size:21px}
+ .ticker{gap:6px}
+ .app:fullscreen .chart-wrap{height:calc(100dvh - 174px);min-height:250px}
+ .app:fullscreen .toolbar{overflow:hidden}
+ .app:fullscreen .timeframe-wheel{min-width:0;max-width:none}
+ .app:fullscreen .timeframe-wheel>button:not(.custom-add){flex-basis:12.5%}
+}
