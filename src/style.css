@@ -105,3 +105,7 @@ footer{display:none}
 .price-alert-plus.on-left{left:6px}
 .price-alert-plus:active{transform:scale(.94);background:#13e895}
 @media(max-width:700px){.price-alert-plus{width:29px;height:29px}.price-alert-plus.on-right{right:5px}.price-alert-plus.on-left{left:5px}}
+
+.alert-actions{display:flex;gap:9px;margin-top:12px}
+.alert-actions button{flex:1;min-height:42px}
+.secondary{background:#27313b;color:#eaecef;border:1px solid #3a4652;border-radius:5px;padding:10px;font-weight:700}
