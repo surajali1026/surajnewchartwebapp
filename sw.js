@@ -1,4 +1,4 @@
-const CACHE='suraj-futures-shell-v1';
+const CACHE='suraj-futures-shell-v2';
 const BASE=new URL('./',self.location.href);
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.add(new Request(BASE.href,{cache:'reload'}))).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));});
