@@ -15,3 +15,31 @@
 .market-tabs button{flex:0 0 auto;background:#1b222a;border:1px solid #303943;color:#8f9aa6;border-radius:4px;padding:8px 9px;font-size:10px;cursor:pointer}
 .market-tabs button.tab-active{color:#f0b90b;border-color:#8b6b0c;background:#292316}
 @media(max-width:700px){.drawing-toolbar{padding:6px 8px;gap:5px}.drawing-toolbar button{font-size:10px;padding:6px}.drawing-toolbar small{width:100%;margin-left:0}.market-tabs button{padding:8px 7px}.frames{max-width:calc(100vw - 120px)}}
+
+/* Compact TradingView-like chart workspace: drawing tools float over the chart. */
+.topbar{height:46px;padding:0 14px}
+.ticker{min-height:66px;padding:7px 14px}
+.toolbar{height:46px;padding:0 10px}
+.chart-panel{padding:0 4px}
+.chart-legend{height:28px;padding:0 8px}
+.chart-wrap{height:calc(100dvh - 205px);min-height:500px;max-height:none;touch-action:pan-y pinch-zoom}
+.chart{touch-action:pan-y pinch-zoom}
+.chart-draw-tools{position:absolute;z-index:6;top:8px;left:8px;display:flex;gap:4px;padding:4px;background:rgba(15,19,24,.88);border:1px solid #303943;border-radius:6px;backdrop-filter:blur(6px)}
+.chart-draw-tools button{width:32px;height:30px;display:grid;place-items:center;background:transparent;border:0;border-radius:4px;color:#aeb8c2;cursor:pointer}
+.chart-draw-tools button:hover,.chart-draw-tools button.draw-active{background:#352b12;color:#f0b90b}
+.countdown{left:auto;right:82px;bottom:auto;z-index:5;padding:5px 8px;background:rgba(15,19,24,.92);border-color:#f0b90b66;white-space:nowrap}
+.countdown span{font-size:11px}
+.drawing-toolbar,.bottom-tools{display:none!important}
+footer{display:none}
+@media(max-width:700px){
+ .topbar{height:42px;padding:0 8px}
+ .ticker{min-height:58px;padding:5px 8px;gap:9px}
+ .ticker-meta{display:none}
+ .toolbar{height:42px;padding:0 5px}
+ .chart-panel{padding:0}
+ .chart-legend{height:26px;padding:0 6px;font-size:9px}
+ .chart-wrap{height:calc(100dvh - 174px);min-height:430px}
+ .countdown{right:72px;padding:4px 6px;font-size:10px}
+ .chart-draw-tools{top:6px;left:6px}
+ .chart-draw-tools button{width:29px;height:27px}
+}
