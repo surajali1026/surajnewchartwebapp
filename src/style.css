@@ -43,3 +43,7 @@ footer{display:none}
  .chart-draw-tools{top:6px;left:6px}
  .chart-draw-tools button{width:29px;height:27px}
 }
+
+.install-app-btn{display:inline-flex;align-items:center;gap:5px;border:1px solid #8b6b0c;background:#292316;color:#f0b90b;border-radius:5px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.install-app-btn:hover{background:#3a2f14}
+@media(max-width:700px){.install-app-btn{padding:6px 7px;font-size:10px}.topbar{gap:7px}}
