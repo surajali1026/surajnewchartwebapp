@@ -39,7 +39,7 @@ function App(){
     const i=a.findIndex(x=>x.time===t);
     if(i>=0){
      const prev=a[i];
-     a[i]={...raw,time:t,open:custom?prev.open:raw.open,high:custom?Math.max(prev.high,raw.high):raw.high,low:custom?Math.min(prev.low,raw.low):raw.low,volume:custom?prev.volume+raw.volume:raw.volume};
+     a[i]={...raw,time:t,open:custom?prev.open:raw.open,high:custom?Math.max(prev.high,raw.high):raw.high,low:custom?Math.min(prev.low,raw.low):raw.low,volume:custom?prev.volume:raw.volume};
     }else a.push({...raw,time:t});
     return a.sort((x,y)=>x.time-y.time).slice(-600);
    });
