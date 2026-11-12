@@ -1,0 +1,24 @@
+{
+  "id": "./",
+  "name": "Suraj Futures Chart",
+  "short_name": "Suraj Chart",
+  "description": "Live crypto futures charts and market watchlist",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#0b0e11",
+  "theme_color": "#0b0e11",
+  "categories": [
+    "finance",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "./icons/app.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
